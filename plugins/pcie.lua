@@ -16,15 +16,15 @@ local f = pcie_proto.fields
 -- Reserved:3bit, default:0
 -- Timestamp:40bit, default:0, Clock_source:PCIe_clock(4ns)
 -- 
-f.tcap_ver  = ProtoField.new("Version", "pcie.tcap.version", ftypes.UINT8, nil, base.DEC)
+-- f.tcap_ver  = ProtoField.new("Version", "pcie.tcap.version", ftypes.UINT8, nil, base.DEC)
 --f.tcap_dir  = ProtoField.new("Packet Direction", "pcie.tcap.direction", ftypes.UINT8, nil, base.HEX)
-local TCAPPacketDirection = {
-	[0] = "Host-to-Device",
-	[1] = "Device-to-Host"
-}
-f.tcap_dir  = ProtoField.uint8("pcie.tcap.direction", "Packet Direction", base.DEC, TCAPPacketDirection)
-f.tcap_rsvd = ProtoField.new("Reserved", "pcie.tcap.reserved", ftypes.UINT8, nil, base.NONE)
-f.tcap_ts   = ProtoField.new("Timestamp", "pcie.tcap.timestamp", ftypes.BYTES)
+-- local TCAPPacketDirection = {
+-- 	[0] = "Host-to-Device",
+-- 	[1] = "Device-to--[[-]]Host"
+-- }
+-- f.tcap_dir  = ProtoField.uint8("pcie.tcap.direction", "Packet Direction", base.DEC, TCAPPacketDirection)
+-- f.tcap_rsvd = ProtoField.new("Reserved", "pcie.tcap.reserved", ftypes.UINT8, nil, base.NONE)
+-- f.tcap_ts   = ProtoField.new("Timestamp", "pcie.tcap.timestamp", ftypes.BYTES)
 
 
 -- PCI Express TLP 3DW Header:
@@ -38,7 +38,7 @@ f.tcap_ts   = ProtoField.new("Timestamp", "pcie.tcap.timestamp", ftypes.BYTES)
 -- +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 --
 f.tlp_rsvd0   = ProtoField.new("Reserved0", "pcie.tlp.reserved0", ftypes.UINT8, nil, base.NONE)
--- f.tlp_fmt     = ProtoField.new("Packet Format", "pcie.tlp.format", ftypes.UINT8, nil, base.HEX)
+f.tlp_fmt     = ProtoField.new("Packet Format", "pcie.tlp.format", ftypes.UINT8, nil, base.HEX)
 local TLPPacketFormat = {
 	[0] = "MRd_3DW_NO_DATA",
 	[1] = "MRd_4DW_NO_DATA",
@@ -74,11 +74,11 @@ function pcie_proto.dissector(buffer, pinfo, tree)
 	pinfo.cols.protocol = "PCIe TLP"
 	local subtree = tree:add(pcie_proto, buffer(0, buffer:len()))
 
-	local tcap_subtree = subtree:add(buffer(0,6), "TLP Capture Header")
-	tcap_subtree:add(f.tcap_ver,  buffer(0,1), buffer(0,1):bitfield(0,3))
-	tcap_subtree:add(f.tcap_dir,  buffer(0,1), buffer(0,1):bitfield(3,2))
-	tcap_subtree:add(f.tcap_rsvd, buffer(0,1), buffer(0,1):bitfield(5,3))
-	tcap_subtree:add(f.tcap_ts,   buffer(1,5))
+-- 	local tcap_subtree = subtree:add(buffer(0,6), "TLP Capture Header")
+-- 	tcap_subtree:add(f.tcap_ver,  buffer(0,1), buffer(0,1):bitfield(0,3))
+-- 	tcap_subtree:add(f.tcap_dir,  buffer(0,1), buffer(0,1):bitfield(3,2))
+-- 	tcap_subtree:add(f.tcap_rsvd, buffer(0,1), buffer(0,1):bitfield(5,3))
+-- 	tcap_subtree:add(f.tcap_ts,   buffer(1,5))
 
 	local tlp_subtree = subtree:add(buffer(6, buffer:len()-6), "Transaction Layer Packet")
 	tlp_subtree:add(f.tlp_rsvd0,   buffer( 6,1), buffer( 6,1):bitfield(0, 1))
@@ -101,5 +101,7 @@ function pcie_proto.dissector(buffer, pinfo, tree)
 
 end
 
-DissectorTable.get("udp.port"):add(14198, pcie_proto)
+-- DissectorTable.get("udp.port"):add(14198, pcie_proto)
+DissectorTable.get("tcp.port"):add("0-65535", pcie_proto)
+-- enableDissector()
 
