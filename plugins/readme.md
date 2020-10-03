@@ -19,8 +19,6 @@ During debugging Wireshark support reloading the LUA dissectors during runtime w
 
 ## TODOs
 
-1. add FMT / TYPE based decoding of TLPs
- -> add 4th DW header decoding
-2. add field for number of TLPs field to root of PCIe tree
-3. add field for number of padding bytes to root of PCIe tree
-4. add field for number of TLP bytes to root of PCIe tree
+1. various header fields are not fully processed and displayed as per dependency or marked as unused properly
+2. various checks and calculations are missing
+
