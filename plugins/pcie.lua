@@ -52,6 +52,12 @@ local f = pcie_proto.fields
 -- +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 --
 
+f.totalTlps = ProtoField.new("Total TLPs", "pcie.totalTlps", ftypes.UINT32, nil, base.DEC)
+f.totalTlpBytes = ProtoField.new("Total TLP Bytes", "pcie.totalTlpBytes", ftypes.UINT32, nil, base.DEC)
+f.totalTlpPayloadBytes = ProtoField.new("Total TLP Payload Bytes", "pcie.totalTlpPayloadBytes", ftypes.UINT32, nil, base.DEC)
+f.totalPaddings = ProtoField.new("Total Padding Sections", "pcie.totalPaddings", ftypes.UINT32, nil, base.DEC)
+f.totalPaddingBytes = ProtoField.new("Total Padding Bytes", "pcie.totalPaddingBytes", ftypes.UINT32, nil, base.DEC)
+
 f.tlp_fmt     = ProtoField.new("Packet Format", "pcie.tlp.format", ftypes.UINT8, nil, base.HEX)
 local TLPPacketFormat = {
 	[0] = "3DW_NO_DATA",
@@ -248,6 +254,14 @@ function pcie_proto.dissector(buffer, pinfo, tree)
   local subtree = tree:add(pcie_proto, buffer(tlpOffset+0, buffer:len()-tlpOffset))
 
   local tlpTypeText = ""
+
+  local totalTlpBytes = 0
+  local totalTlpPayloadBytes = 0
+  local totalTlps = 0
+  local totalPaddingBytes = 0
+  local totalPaddings = 0
+
+
 
   -- iterate thorugh buffer until at least a minimal TLP does not fit anymore
   while tlpOffset+12 < buffer:len() do
@@ -453,6 +467,10 @@ function pcie_proto.dissector(buffer, pinfo, tree)
 
     tlpOffset = tlpOffset + tlpLength
 
+    totalTlps = totalTlps + 1
+    totalTlpBytes = totalTlpBytes + tlpLength
+    totalTlpPayloadBytes = totalTlpPayloadBytes + tlpPayloadLength
+
     -- padding may occur after each TLP, also in the end of a segment
     -- padding is bound to 16 Bytes boundaries or less if the segment ends before
     local paddingStart = tlpOffset
@@ -471,6 +489,9 @@ function pcie_proto.dissector(buffer, pinfo, tree)
     end
 
     if paddingPresent then
+      totalPaddings = totalPaddings + 1
+      totalPaddingBytes = totalPaddingBytes + paddingLength
+
       padding_subtree = subtree:add(padding_proto, buffer(paddingStart, paddingEnd-paddingStart), "Padding")
       padding_subtree:add(p.padding_length, paddingEnd-paddingStart):set_generated()
       padding_subtree:add(p.padding_data, buffer(paddingStart, paddingEnd-paddingStart))
@@ -478,6 +499,12 @@ function pcie_proto.dissector(buffer, pinfo, tree)
     tlpOffset = paddingEnd
 
   end
+
+  subtree:add(f.totalTlps, totalTlps):set_generated()
+  subtree:add(f.totalTlpBytes, totalTlpBytes):set_generated()
+  subtree:add(f.totalTlpPayloadBytes, totalTlpPayloadBytes):set_generated()
+  subtree:add(f.totalPaddings, totalPaddings):set_generated()
+  subtree:add(f.totalPaddingBytes, totalPaddingBytes):set_generated()
 
 end
 
