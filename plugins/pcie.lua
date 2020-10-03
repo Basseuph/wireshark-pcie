@@ -74,31 +74,66 @@ f.tlp_type = ProtoField.uint8("pcie.tlp.pkttype", "Packet Type", base.DEC, TLPPa
 
 f.tlp_tlpType = ProtoField.new("TLP Type", "pcie.tlp.tlpType", ftypes.UINT8, nil, base.HEX)
 
-local tlpTypeLong = {}
-tlpTypeLong["MRd"] = "Memory Read Request"
-tlpTypeLong["MRdLk"] = "Memory Read Request-Locked"
-tlpTypeLong["MWr"] = "Memory Write Request"
-tlpTypeLong["IORd"] = "IO Read Request"
-tlpTypeLong["IOWr"] = "IO Write Request"
-tlpTypeLong["CfgRd0"] = "Configuration Read Type 0"
-tlpTypeLong["CfgWr0"] = "Configuration Write Type 0"
-tlpTypeLong["CfgRd1"] = "Configuration Read Type 1"
-tlpTypeLong["CfgWr1"] = "Configuration Write Type 1"
-tlpTypeLong["TCfgRd"] = "Deprecated TLP Type - (Trusted Configuration Read)"
-tlpTypeLong["TCfgWr"] = "Deprecated TLP Type - (Trusted Configuration Write)"
-tlpTypeLong["Msg"] = "Message Request"
-tlpTypeLong["MsgD"] = "Message Request with Data"
-tlpTypeLong["Cpl"] = "Completion without Data"
-tlpTypeLong["CplD"] = "Completion with Data"
-tlpTypeLong["CplLk"] = "Completion for locked Memory Read without Data"
-tlpTypeLong["CplDLk"] = "Completion for locked Memory Read with Data"
-tlpTypeLong["FetchAdd"] = "Fetch and add AtomicOp Request"
-tlpTypeLong["swap"] = "Unconditional swqp AtomicOp Request"
-tlpTypeLong["CAS"] = "Compare and Swap AtomicOp Request"
-tlpTypeLong["LPrfx"] = "Local TLP Prefix"
-tlpTypeLong["EPrfx"] = "End to End TLP Prefix"
+local tlpTypeLong = {
+  [0x00] = "Memory Read Request"      ,
+  [0x20] = "Memory Read Request"      ,
+  [0x01] = "Memory Read Request-Locked"    ,
+  [0x21] = "Memory Read Request-Locked"    ,
+  [0x40] = "Memory Write Request"      ,
+  [0x60] = "Memory Write Request"      ,
+  [0x02] = "IO Read Request"     ,
+  [0x42] = "IO Write Request"     ,
+  [0x04] = "Configuration Read Type 0"   ,
+  [0x44] = "Configuration Write Type 0"   ,
+  [0x05] = "Configuration Read Type 1"   ,
+  [0x45] = "Configuration Write Type 1"   ,
+  [0x1B] = "Deprecated TLP Type - (Trusted Configuration Read)"   ,
+  [0x5B] = "Deprecated TLP Type - (Trusted Configuration Write)"   ,
+  [0x30] = "Message Request"      ,
+  [0x31] = "Message Request"      ,
+  [0x32] = "Message Request"      ,
+  [0x33] = "Message Request"      ,
+  [0x34] = "Message Request"      ,
+  [0x35] = "Message Request"      ,
+  [0x36] = "Message Request"      ,
+  [0x37] = "Message Request"      ,
+  [0x70] = "Message Request with Data"     ,
+  [0x71] = "Message Request with Data"     ,
+  [0x72] = "Message Request with Data"     ,
+  [0x73] = "Message Request with Data"     ,
+  [0x74] = "Message Request with Data"     ,
+  [0x75] = "Message Request with Data"     ,
+  [0x76] = "Message Request with Data"     ,
+  [0x77] = "Message Request with Data"     ,
+  [0x0A] = "Completion without Data"      ,
+  [0x4A] = "Completion with Data"     ,
+  [0x0B] = "Completion for locked Memory Read without Data"    ,
+  [0x4B] = "Completion for locked Memory Read with Data"   ,
+  [0x4C] = "Fetch and add AtomicOp Request" ,
+  [0x6C] = "Fetch and add AtomicOp Request" ,
+  [0x4D] = "Unconditional swqp AtomicOp Request"     ,
+  [0x6D] = "Unconditional swqp AtomicOp Request"     ,
+  [0x4E] = "Compare and Swap AtomicOp Request"      ,
+  [0x6E] = "Compare and Swap AtomicOp Request"      ,
+  [0x80] = "Local TLP Prefix"    ,
+  [0x81] = "Local TLP Prefix"    ,
+  [0x82] = "Local TLP Prefix"    ,
+  [0x83] = "Local TLP Prefix"    ,
+  [0x84] = "Local TLP Prefix"    ,
+  [0x85] = "Local TLP Prefix"    ,
+  [0x86] = "Local TLP Prefix"    ,
+  [0x87] = "Local TLP Prefix"    ,
+  [0x88] = "End to End TLP Prefix"    ,
+  [0x89] = "End to End TLP Prefix"    ,
+  [0x8A] = "End to End TLP Prefix"    ,
+  [0x8B] = "End to End TLP Prefix"    ,
+  [0x8C] = "End to End TLP Prefix"    ,
+  [0x8D] = "End to End TLP Prefix"    ,
+  [0x8E] = "End to End TLP Prefix"    ,
+  [0x8F] = "End to End TLP Prefix"
+}
 
-local tlpType = {
+local tlpTypeShort = {
   [0x00] = "MRd"      ,
   [0x20] = "MRd"      ,
   [0x01] = "MRdLk"    ,
@@ -157,28 +192,51 @@ local tlpType = {
   [0x8F] = "EPrfx"
 }
 
-f.tlp_tlpType = ProtoField.uint8("pcie.tlp.tlpType", "TLP Type", base.HEX, tlpType)
+f.tlp_tlpType = ProtoField.uint8("pcie.tlp.tlpType", "TLP Type", base.HEX, tlpTypeShort)
 
 f.tlp_rsvd1   = ProtoField.new("Reserved1", "pcie.tlp.reserved1", ftypes.UINT8, nil, base.NONE)
-f.tlp_tclass  = ProtoField.new("Tclass", "pcie.tlp.tclass", ftypes.UINT8, nil, base.HEX)
+f.tlp_tclass  = ProtoField.new("Traffic Class", "pcie.tlp.tclass", ftypes.UINT8, nil, base.HEX)
 f.tlp_rsvd2   = ProtoField.new("Reserved2", "pcie.tlp.reserved2", ftypes.UINT8, nil, base.NONE)
-f.tlp_digest  = ProtoField.new("Digest", "pcie.tlp.digest", ftypes.UINT8, nil, base.HEX)
-f.tlp_poison  = ProtoField.new("Poison", "pcie.tlp.poison", ftypes.UINT8, nil, base.HEX)
+--t
+f.tlp_hints   = ProtoField.new("TLP Hints present", "pcie.tlp.hints", ftypes.UINT8, nil, base.HEX)
+-- T
+f.tlp_digest  = ProtoField.new("Digest Present", "pcie.tlp.digest", ftypes.UINT8, nil, base.HEX)
+
+f.tlp_poison  = ProtoField.new("Error Poisoned", "pcie.tlp.poison", ftypes.UINT8, nil, base.HEX)
 f.tlp_attr    = ProtoField.new("Attr", "pcie.tlp.attr", ftypes.UINT8, nil, base.HEX)
+
+-- AT field is only valid for memory read / memory write and AtomicOp Requests,
+-- for all other requests this field is reserved!
+f.tlp_at      = ProtoField.new("Address Type", "pcie.tlp.at", ftypes.UINT8, nil, base.HEX)
+
+local tlpAddressType = {
+    [0x0] = "Untranslated"        ,
+    [0x1] = "Translation Request" ,
+    [0x2] = "Translated"          ,
+    [0x3] = "Reserved"
+}
+
 f.tlp_rsvd3   = ProtoField.new("Reserved3", "pcie.tlp.reserved3", ftypes.UINT8, nil, base.NONE)
 f.tlp_length  = ProtoField.new("Length", "pcie.tlp.length", ftypes.UINT8, nil, base.DEC)
 f.tlp_RsvdLen = ProtoField.new("Reserved", "pcie.tlp.reservedLength", ftypes.UINT8, nil, base.HEX)
 f.tlp_reqid   = ProtoField.new("Request ID", "pcie.tlp.reqid", ftypes.UINT8, nil, base.HEX)
 f.tlp_tag     = ProtoField.new("Tag", "pcie.tlp.tag", ftypes.UINT8, nil, base.HEX)
-f.tlp_lastbe  = ProtoField.new("LastBE", "pcie.tlp.lastbe", ftypes.UINT8, nil, base.HEX)
-f.tlp_firstbe = ProtoField.new("FirstBE", "pcie.tlp.firstbe", ftypes.UINT8, nil, base.HEX)
-f.tlp_addr    = ProtoField.new("Address", "pcie.tlp.addr", ftypes.UINT8, nil, base.HEX)
-f.tlp_rsvd4   = ProtoField.new("Reserved4", "pcie.tlp.reserved4", ftypes.UINT8, nil, base.NONE)
-f.tlp_rsvd4   = ProtoField.new("Reserved4", "pcie.tlp.reserved4", ftypes.UINT8, nil, base.NONE)
-f.tlp_rsvd4   = ProtoField.new("Reserved4", "pcie.tlp.reserved4", ftypes.UINT8, nil, base.NONE)
-f.tlp_rsvd4   = ProtoField.new("Reserved4", "pcie.tlp.reserved4", ftypes.UINT8, nil, base.NONE)
-f.tlp_rsvd4   = ProtoField.new("Reserved4", "pcie.tlp.reserved4", ftypes.UINT8, nil, base.NONE)
-f.tlp_4thDW_HDR   = ProtoField.new("4thDW_HDR", "pcie.tlp.4thDW_HDR", ftypes.BYTES, nil, base.NONE)
+f.tlp_lastbe  = ProtoField.new("Last Byte Enable", "pcie.tlp.lastbe", ftypes.UINT8, nil, base.HEX)
+f.tlp_firstbe = ProtoField.new("First Byte Enable", "pcie.tlp.firstbe", ftypes.UINT8, nil, base.HEX)
+f.tlp_addr    = ProtoField.new("Address", "pcie.tlp.addr", ftypes.BYTES, nil, base.NONE)
+
+-- The PH field is only valid if T (TH) is set
+
+f.tlp_processingHint = ProtoField.new("Processing Hint", "pcie.tlp.ph", ftypes.UINT8, nil, base.NONE)
+
+local tlpProcessingHint = {
+    [0x0] = "Bi-directional data structure" ,
+    [0x1] = "Requester",
+    [0x2] = "Target",
+    [0x3] = "Target with priority"
+}
+
+--f.tlp_4thDW_HDR   = ProtoField.new("4thDW_HDR", "pcie.tlp.4thDW_HDR", ftypes.BYTES, nil, base.NONE)
 f.tlp_payload = ProtoField.new("Payload", "pcie.tlp.payload", ftypes.BYTES, nil, base.NONE)
 f.tlp_valPayload = ProtoField.new("Valid Payload", "pcie.tlp.validPayload", ftypes.BYTES, nil, base.NONE)
 f.tlp_analysisFlag = ProtoField.new("Analysis Flag", "pcie.tlp.analysis.flag", ftypes.NONE, nil, base.TEXT)
@@ -188,6 +246,8 @@ function pcie_proto.dissector(buffer, pinfo, tree)
   local cnt = 0
 
   local subtree = tree:add(pcie_proto, buffer(tlpOffset+0, buffer:len()-tlpOffset))
+
+  local tlpTypeText = ""
 
   -- iterate thorugh buffer until at least a minimal TLP does not fit anymore
   while tlpOffset+12 < buffer:len() do
@@ -208,20 +268,23 @@ function pcie_proto.dissector(buffer, pinfo, tree)
 
     local t_tree = tlp_subtree:add(f.tlp_tlpType, buffer(tlpOffset+ 0,1)):set_generated()
 
-    if (tlpType == 0x40 or tlpType == 0x60 or tlpType == 0x00 or tlpType == 0x20) then
-      isMemReq = true
-    end
-
     local tlpType = buffer(tlpOffset+ 0,1):uint()
+    local tlpTypeText = tlpTypeLong[buffer(tlpOffset+ 0,1):bitfield(3, 5)]
     t_tree:add(f.tlp_fmt,     buffer(tlpOffset+ 0,1), buffer(tlpOffset+ 0,1):bitfield(0, 3))
     t_tree:add(f.tlp_type,    buffer(tlpOffset+ 0,1), buffer(tlpOffset+ 0,1):bitfield(3, 5))
     tlp_subtree:add(f.tlp_rsvd1,   buffer(tlpOffset+ 1,1), buffer(tlpOffset+ 1,1):bitfield(0, 1))
     tlp_subtree:add(f.tlp_tclass,  buffer(tlpOffset+ 1,1), buffer(tlpOffset+ 1,1):bitfield(1, 3))
-    tlp_subtree:add(f.tlp_rsvd2,   buffer(tlpOffset+ 1,1), buffer(tlpOffset+ 1,1):bitfield(4, 4))
+    tlp_subtree:add(f.tlp_rsvd2,   buffer(tlpOffset+ 1,1), buffer(tlpOffset+ 1,1):bitfield(4, 3))
+    tlp_subtree:add(f.tlp_hints,   buffer(tlpOffset+ 1,1), buffer(tlpOffset+ 1,1):bitfield(7, 1))
+    local tlp_hints = buffer(tlpOffset+1,1):bitfield(7,1)
     tlp_subtree:add(f.tlp_digest,  buffer(tlpOffset+ 2,1), buffer(tlpOffset+ 2,1):bitfield(0, 1))
     tlp_subtree:add(f.tlp_poison,  buffer(tlpOffset+ 2,1), buffer(tlpOffset+ 2,1):bitfield(1, 1))
     tlp_subtree:add(f.tlp_attr,    buffer(tlpOffset+ 2,1), buffer(tlpOffset+ 2,1):bitfield(2, 2))
-    tlp_subtree:add(f.tlp_rsvd3,   buffer(tlpOffset+ 2,1), buffer(tlpOffset+ 2,1):bitfield(4, 2))
+    tlp_subtree:add(f.tlp_at,      buffer(tlpOffset+ 2,1), buffer(tlpOffset+ 2,1):bitfield(4, 2))
+
+    if (tlpType == 0x40 or tlpType == 0x60 or tlpType == 0x00 or tlpType == 0x20) then
+      isMemReq = true
+    end
 
     -- length field is only valid for TLPs with Payload
     if (tlpType >= 0x70 and tlpType <= 0x70) or (tlpType == 0x4A) or (tlpType == 0x4B)  -- MsgD, CplD, CplDLk,
@@ -246,7 +309,7 @@ function pcie_proto.dissector(buffer, pinfo, tree)
       if (isMemReq)
         and (tlpPayloadLength == 1*4) and (lastBe == 0 or firstBe == 0)
       then
-        ;
+
       elseif tlpPayloadLength > 1*4 and firstBe == 0 then
         firstBe_tree:add_expert_info(PI_MALFORMED, PI_ERROR, "invalid value")
         tlp_subtree:add(f.tlp_analysisFlag, "invalid value")
@@ -257,7 +320,7 @@ function pcie_proto.dissector(buffer, pinfo, tree)
       if (isMemReq)
         and (tlpPayloadLength == 1*4) and (lastBe == 0 or firstBe == 0)
       then
-        ;
+
       elseif tlpPayloadLength == 1*4 and lastBe ~= 0 then
         lastBe_tree:add_expert_info(PI_MALFORMED, PI_ERROR, "invalid value")
         tlp_subtree:add(f.tlp_analysisFlag, "invalid value")
@@ -294,11 +357,6 @@ function pcie_proto.dissector(buffer, pinfo, tree)
 
     end
 
-    tlp_subtree:add(f.tlp_addr,    buffer(tlpOffset+ 8,4), buffer(tlpOffset+ 8,4):bitfield(0,30))
-    tlp_subtree:add(f.tlp_rsvd4,   buffer(tlpOffset+11,1), buffer(tlpOffset+11,1):bitfield(6, 2))
-
-    tlp_subtree:append_text(" (Payload Length: " .. tostring(tlpPayloadLength) .. " at tlpOffset: " .. tostring(tlpOffset) .. ")")
-
     -- header processing
     -- 3DW_NO_DATA
     if buffer(tlpOffset+ 0,1):bitfield(0, 3) == 0 then
@@ -328,13 +386,35 @@ function pcie_proto.dissector(buffer, pinfo, tree)
       tlp_subtree:set_len(tlpLength)
       tlp_subtree:add_expert_info(PI_MALFORMED, PI_ERROR, "unknown FMT value")
     end
+--    if tlpHas4thHeaderDW then
+        --tlp_subtree:add(f.tlp_4thDW_HDR, buffer(tlpOffset+12, 4))
+--    end
+
+    -- LUA cannot handle numbers >> 32 bits (its limit is somewhere around the
+    -- 52 Bits due to internal double representation of all numbers)
+    local address = 0
     if tlpHas4thHeaderDW then
-       tlp_subtree:add(f.tlp_4thDW_HDR, buffer(tlpOffset+12, 4))
+        --address = (buffer(tlpOffset+8) * 2 ^ 32) + buffer(tlpOffset+12, 4):bitfield(0,30)
+        tlp_subtree:add(f.tlp_addr, buffer(tlpOffset+8,8), tostring(buffer(tlpOffset+8,8):bitfield(0,62)))
+        -- ph is only valid when th (t) is set
+        if th_present then
+            tlp_subtree:add(f.tlp_processingHint,   buffer(tlpOffset+15,1), buffer(tlpOffset+15,1):bitfield(6, 2))
+        end
+    else
+        address = buffer(tlpOffset+8, 8):bitfield(0,30)
+        tlp_subtree:add(f.tlp_addr, buffer(tlpOffset+8,4), address):set_generated()
+        if th_present then
+            tlp_subtree:add(f.tlp_processingHint,   buffer(tlpOffset+11,1), buffer(tlpOffset+11,1):bitfield(6, 2))
+        end
+    end
+    -- check for 64  / 32 bit memory addresses
+
+    local tlpAddrSize = "32"
+    if tlpHas4thHeaderDW then
+        tlpAddrSize = "64"
     end
 
-    local address = 0
-    -- TODO handle address extraction and check for 4 kiB boundary crossing
-    -- chec kfor 64  / 32 bit memory addresses
+    tlp_subtree:append_text(" (" .. tlpAddrSize .. "Bit " .. tlpTypeText .. ", Payload Length: " .. tostring(tlpPayloadLength) .. " at tlpOffset: " .. tostring(tlpOffset) .. ")")
 
     tlpLength = tlpPayloadLength + tlpHeaderLength
     tlp_subtree:set_len(tlpLength)
@@ -344,7 +424,7 @@ function pcie_proto.dissector(buffer, pinfo, tree)
     if tlpHasPayload then
       local tlpError = false
       local originalPayloadLength = tlpPayloadLength
-      if tlpOffset+tlpPayloadLength>buffer:len() then
+      if tlpOffset+tlpLength>buffer:len() then
         tlpPayloadLength = buffer:len()-tlpOffset-tlpHeaderLength
         tlpError = true
       end
