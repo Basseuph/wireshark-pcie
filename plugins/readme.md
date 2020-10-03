@@ -1,23 +1,23 @@
-= Wireshark PCIe TLP dissector written in LUA script
+# Wireshark PCIe TLP dissector written in LUA script
 
-== Description
+## Description
 
 The wireshark plugin is capable of dissecting fully captured TLPs, also embedded into network packets.
 It is also capable of recognizing padding data (0x00 bytes) between TLPs, which are marked as such and added to the tree.
 
 The script has been adapted from this one https://github.com/sora/wireshark-pcie
 
-== Install
+## Install
 
 copy the lua script file to .config/wireshark/plugins/ for user local installation
 
-== Editing & Debugging
+## Editing & Debugging
 
 During debugging Wireshark support reloading the LUA dissectors during runtime with the shortcut Ctrl + Shift + L
 
-== NOTEs
+## NOTEs
 
-== TODOs
+## TODOs
 
 1. add FMT / TYPE based decoding of TLPs
  -> add 4th DW header decoding
